@@ -141,22 +141,24 @@ class Filter:
     class Valves(BaseModel):
         """Configuration valves for the filter"""
 
-        # ------ Begin Embedding Model Configuration ------ ADDED
+        # ══════════════════════════════════════════════════════════════
+        # 🔧 EMBEDDING SETTINGS (for finding similar memories)
+        # ══════════════════════════════════════════════════════════════
         embedding_provider_type: Literal["local", "openai_compatible"] = Field(
             default="local",
-            description="Type of embedding provider ('local' for SentenceTransformer or 'openai_compatible' for API)",
+            description="'local' = free, runs on server. 'openai_compatible' = external API.",
         )
         embedding_model_name: str = Field(
-            default="all-MiniLM-L6-v2",  # Default to the local model
-            description="Name of the embedding model to use (e.g., 'all-MiniLM-L6-v2', 'text-embedding-3-small')",
+            default="all-MiniLM-L6-v2",
+            description="Model name. Local: 'all-MiniLM-L6-v2'. API: e.g., 'text-embedding-3-small'.",
         )
         embedding_api_url: Optional[str] = Field(
             default=None,
-            description="API endpoint URL for the embedding provider (required if type is 'openai_compatible')",
+            description="[Only for API] Endpoint URL e.g., https://api.openai.com/v1/embeddings",
         )
         embedding_api_key: Optional[str] = Field(
             default=None,
-            description="API Key for the embedding provider (required if type is 'openai_compatible')",
+            description="[Only for API] Your API Key.",
         )
         # ------ End Embedding Model Configuration ------
 
@@ -337,14 +339,16 @@ Analyze the following related memories and provide a concise summary.""",
             description="Maximum length of each injected memory snippet",
         )
 
-        # --- Generic LLM Provider Configuration ---
+        # ══════════════════════════════════════════════════════════════
+        # 🤖 LLM SETTINGS (for extracting memories from chat)
+        # ══════════════════════════════════════════════════════════════
         llm_provider_type: Literal["ollama", "openai_compatible"] = Field(
             default="ollama",
-            description="Type of LLM provider ('ollama' or 'openai_compatible')",
+            description="'ollama' = local Ollama. 'openai_compatible' = external API like OpenAI/Mistral.",
         )
         llm_model_name: str = Field(
-            default="llama3:latest",  # Default sensible for Ollama
-            description="Name of the LLM model to use (e.g., 'llama3:latest', 'gpt-4o')",
+            default="llama3:latest",
+            description="Model name. Ollama: 'llama3:latest'. API: e.g., 'gpt-4o-mini' or 'mistral/mistral-small-latest'.",
         )
         llm_api_endpoint_url: str = Field(
             # Change default to use host.docker.internal for accessing Ollama on host

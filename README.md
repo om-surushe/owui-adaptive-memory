@@ -1,43 +1,41 @@
-**OVERVIEW**
+# Adaptive Memory v3.1 for OpenWebUI
 
-Adaptive Memory is a sophisticated plugin that provides persistent, personalized memory capabilities for Large Language Models (LLMs) within OpenWebUI. It enables LLMs to remember key information about users across separate conversations, creating a more natural and personalized experience. The system dynamically extracts, filters, stores, and retrieves user-specific information from conversations, then intelligently injects relevant memories into future LLM prompts.
+Adaptive Memory provides persistent, personalized long-term memory for your AI conversations. It automatically learns facts, preferences, and goals from your chats and injects them into future conversations where relevant.
 
-**KEY FEATURES**
+## Quick Start
 
-* Automatically identifies facts, preferences, relationships, and goals from user messages
-* Categorizes memories with appropriate tags (identity, preference, behavior, relationship, goal, possession)
-* Focuses on user-specific information while filtering out general knowledge or trivia
-* Multi-layered Filtering Pipeline
-* Robust JSON parsing with fallback mechanisms for reliable memory extraction
-* Preference statement shortcuts for improved handling of common user likes/dislikes
-* Blacklist/whitelist system to control topic filtering
-* Smart deduplication using both semantic (embedding-based) and text-based similarity
-* Optimized Memory Retrieval
-* Vector-based similarity for efficient memory retrieval
-* Optional LLM-based relevance scoring for highest accuracy when needed
-* Performance optimizations to reduce unnecessary LLM calls
-* Smart clustering and summarization of related older memories to prevent clutter
-* Intelligent pruning strategies when memory limits are reached
-* Configurable background tasks for maintenance operations
-* Injects contextually relevant memories into LLM prompts
-* Customizable memory display formats (bullet, numbered, paragraph)
-* Filters meta-explanations from LLM responses for cleaner output
-* Generalized LLM provider configuration supporting both Ollama and OpenAI-compatible APIs
-* Configurable model selection and endpoint URLs
-* Optimized prompts for reliable JSON response parsing
-* Fine-grained control through "valve" settings
-* Input validation to prevent misconfiguration
-* Per-user configuration options
-* Memory Banks – categorize memories into Personal, Work, General (etc.) so retrieval / injection can be focused on a chosen context
+1.  **Enable the Plugin:** Go to **Workspace > Tools > Adaptive Memory** and toggle valid valves.
+2.  **Basic Configuration:**
+    *   **Embedding Provider**: Choose `local` (free, runs on your server) or `openai_compatible` (external API).
+    *   **LLM Provider**: Choose `ollama` (default) or `openai_compatible`.
+3.  **Start Chatting:** The AI will now start remembering key details about you!
 
-**RECENT IMPROVEMENTS (v3.1)**
+## Key Features
 
-* Memory Confidence Scoring & Filtering
-* Flexible Embedding Provider Support (Local/API Valves)
-* Local Embedding Model Auto-Discovery
-* Embedding Dimension Validation
-* Prometheus Metrics Instrumentation
-* Health & Metrics Endpoints (/adaptive-memory/health, /adaptive-memory/metrics)
-* UI Status Emitters for Retrieval
-* Debugging & Robustness Fixes (Issue #15 - Thresholds, Visibility)
-* Minor Fixes (prometheus_client import)
+*   **Auto-Learning:** Automatically extracts facts (e.g., "I live in Paris") and preferences (e.g., "I prefer Python").
+*   **Smart Retrieval:** Finds only relevant memories for the current conversation.
+*   **Deduplication:** Prevents duplicate memories using advanced semantic checking.
+*   **Memory Banks:** Categorizes memories into **General**, **Personal**, **Work**, etc.
+    *   *Usage:* The system automatically assigns banks. You can also manually assign banks using commands if needed.
+*   **Auto-Summarization:** Periodically condenses older memories to save space.
+
+## Configuration Guide ("Valves")
+
+*   **Basic Configuration**: Set your Embedding and LLM providers.
+*   **Memory Quality**:
+    *   `Minimum Confidence`: Control how certain the AI must be to save a memory (0.0 - 1.0). Higher = stricter.
+    *   `Duplicate Threshold`: Control how strictly duplicates are detected.
+*   **Advanced**: Settings like auto-summarization and custom memory banks generally don't need changing.
+
+## Chat Commands
+
+*   `/memory status` - Check if memory is active.
+*   `/memory list` - View all stored memories.
+*   `/memory forget [id]` - Delete a specific memory.
+*   `/memory list_banks` - See available memory banks.
+*   `/memory assist` - Get help with memory features.
+
+## Troubleshooting
+
+*   **"No memories found"**: Try chatting more naturally about yourself. Ensure `Minimum Confidence` isn't set too high (default 0.75 is good).
+*   **Errors**: Check the OpenWebUI logs. Ensure your LLM and Embedding provider URLs are correct.
