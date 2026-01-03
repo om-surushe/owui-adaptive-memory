@@ -1472,17 +1472,36 @@ Your output must be valid JSON only. No additional text.""",
 
         # --- Process Incoming Message ---
         final_message = None
+        
+        # Helper to extract text from content which can be str or list (multimodal)
+        def extract_text(content: Any) -> str:
+            if content is None:
+                return ""
+            if isinstance(content, str):
+                return content
+            if isinstance(content, list):
+                # Concatenate all text parts from multimodal content
+                text_parts = []
+                for part in content:
+                    if isinstance(part, dict) and part.get("type") == "text":
+                        text_parts.append(part.get("text", ""))
+                    elif isinstance(part, str):
+                        text_parts.append(part)
+                return "\n".join(text_parts)
+            return str(content)  # Fallback: convert to string
+
         # 1) Explicit stream=False (non-streaming completion requests)
         if body.get("stream") is False and body.get("messages"):
-            final_message = body["messages"][-1].get("content")
+            final_message = extract_text(body["messages"][-1].get("content"))
 
         # 2) Streaming mode – grab final message when "done" flag arrives
         elif body.get("stream") is True and body.get("done", False):
-            final_message = body.get("message", {}).get("content")
+            final_message = extract_text(body.get("message", {}).get("content"))
 
         # 3) Fallback – many WebUI front-ends don't set a "stream" key at all.
         if final_message is None and body.get("messages"):
-            final_message = body["messages"][-1].get("content")
+            final_message = extract_text(body["messages"][-1].get("content"))
+
 
         # --- Command Handling ---
         # Check if the final message is a command before processing memories
